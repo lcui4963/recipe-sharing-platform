@@ -1,0 +1,37 @@
+---
+globs: next.config.ts,tsconfig.json,postcss.config.mjs
+description: Next.js and TypeScript configuration guidance.
+---
+# Configuration Guidance
+
+## Next.js Config
+Keep config minimal and explicit. Example stable settings in [next.config.ts](mdc:next.config.ts):
+```ts
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  bundlePagesRouterDependencies: true,
+  serverExternalPackages: [],
+  experimental: {
+    staleTimes: { dynamic: 30, static: 180 },
+  },
+}
+export default nextConfig
+```
+
+## TypeScript Config
+Align with strict, modern TS in [tsconfig.json](mdc:tsconfig.json):
+```json
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2022",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "jsx": "preserve",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "noEmit": true,
+    "paths": { "@/*": ["./src/*"] }
+  }
+}
+```
+

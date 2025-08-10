@@ -1,0 +1,22 @@
+---
+globs: app/**/*.{ts,tsx},src/components/**/*.{ts,tsx}
+description: Tailwind, Shadcn UI, Radix UI, accessibility and performance guidance.
+---
+# UI, Accessibility, and Performance
+
+## Styling
+- Tailwind for layout/spacing; use CSS variables for theming in [app/globals.css](mdc:app/globals.css).
+- Prefer Shadcn UI components and Radix primitives for accessibility.
+- Mobile-first; ensure responsive design across breakpoints.
+
+## Accessibility
+- Add ARIA attributes thoughtfully; ensure keyboard navigation.
+- Provide alt text for images; verify color contrast.
+- Test with a screen reader when possible.
+
+## Performance
+- Use `next/image` with proper sizes and lazy loading; prefer WebP/AVIF.
+- Use `next/font` for automatic font optimization.
+- Apply code splitting via dynamic imports when heavy dependencies are client-side only.
+- Monitor Web Vitals and regressions.
+

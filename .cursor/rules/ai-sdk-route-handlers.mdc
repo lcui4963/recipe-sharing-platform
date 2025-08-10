@@ -1,0 +1,33 @@
+---
+globs: app/api/**/route.ts
+description: Vercel AI SDK patterns for streaming text/chat in route handlers.
+---
+# AI SDK Route Handlers
+
+## Packages
+- Use `ai` for core streaming utilities and `@ai-sdk/<provider>` for models (e.g., `@ai-sdk/openai`).
+
+## Streaming Handler
+```ts
+import { openai } from '@ai-sdk/openai'
+import { streamText } from 'ai'
+
+export const maxDuration = 30
+
+export async function POST(req: Request) {
+  const { messages } = await req.json()
+
+  const result = await streamText({
+    model: openai('gpt-4-turbo'),
+    messages,
+    tools: {},
+  })
+
+  return result.toDataStreamResponse()
+}
+```
+
+## Notes
+- Keep handlers stateless and idempotent. Validate inputs and handle timeouts.
+- Prefer server-side tool execution. Avoid leaking secrets to the client.
+

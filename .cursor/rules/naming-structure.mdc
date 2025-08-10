@@ -1,0 +1,19 @@
+---
+globs: **/*
+description: Directory, file naming, and component structure rules.
+---
+# Naming and Structure
+
+## Directories & Files
+- Use lowercase with dashes for directories: `components/auth-wizard`.
+- Co-locate component helpers and types with the component when small; extract to `lib/` for broader reuse.
+
+## Components
+- Prefer named exports. Default exports only for Next.js pages/layouts when required by convention.
+- Order: exports → subcomponents → helpers → types.
+- Keep components small and focused. Compose rather than add props for rare needs.
+
+## Events & Props
+- Event handlers start with `handle...`. Boolean props with auxiliary verbs.
+- Avoid overly generic prop names. Prefer explicit, typed, narrow props.
+

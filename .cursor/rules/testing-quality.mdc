@@ -1,0 +1,19 @@
+---
+globs: **/*.{test,spec}.{ts,tsx},src/**/*.{ts,tsx},app/**/*.{ts,tsx}
+description: Testing strategy, quality, and linting rules-of-thumb.
+---
+# Testing and Quality
+
+## Strategy
+- Favor React Testing Library for components; test behavior and a11y over implementation.
+- Include edge cases and error scenarios. Validate error boundaries and Suspense fallbacks.
+- Unit test pure utilities; integration test key flows.
+
+## Linting & Formatting
+- Keep ESLint and Prettier enabled; fix new issues before merging.
+- Do not introduce `any`. Maintain type coverage.
+
+## Security
+- Avoid leaking secrets to the client. Validate user input on the server.
+- Sanitize/escape untrusted content; prefer safe components over `dangerouslySetInnerHTML`.
+

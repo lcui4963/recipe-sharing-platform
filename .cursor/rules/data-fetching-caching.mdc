@@ -1,0 +1,27 @@
+---
+globs: app/**/*.{ts,tsx}
+description: Data fetching, caching, and route handler guidance.
+---
+# Data Fetching, Caching, and Routes
+
+## Fetching
+- Default: no cache. Use `cache: 'force-cache'` for long-lived data.
+- Use `next.revalidate` or `revalidate` options for ISR-like behavior when suitable.
+- For layout/page defaults, you can set `export const fetchCache = 'default-cache'`.
+
+## Routes
+- Mark route handlers static when safe:
+  ```ts
+  export const dynamic = 'force-static'
+  ```
+- Example route handler:
+  ```ts
+  export async function GET(request: Request) {
+    const params = await (request as any).params
+    return new Response(JSON.stringify({ ok: true }))
+  }
+  ```
+
+## References
+- [next.config.ts](mdc:next.config.ts)
+

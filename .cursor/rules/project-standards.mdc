@@ -1,0 +1,52 @@
+---
+alwaysApply: true
+description: Core engineering standards and workflow for this project.
+---
+# Project Standards and Workflow
+
+This rule is always applied. It encodes how we approach requests and structure solutions across the repo. Key project files:
+- [app/layout.tsx](mdc:app/layout.tsx)
+- [app/page.tsx](mdc:app/page.tsx)
+- [app/globals.css](mdc:app/globals.css)
+- [next.config.ts](mdc:next.config.ts)
+- [tsconfig.json](mdc:tsconfig.json)
+- [README.md](mdc:README.md)
+
+## Analysis Process
+- **Request Analysis**: Identify task type, involved stacks (TypeScript, React 19, Next.js 15 App Router), explicit/implicit requirements, core problem, constraints.
+- **Solution Planning**: Break into steps, keep modular and reusable, map files/deps, consider alternatives, define testing/validation.
+- **Implementation Strategy**: Prefer RSC, minimize `use client`, consider performance, handle errors/edge cases, ensure a11y, follow best practices.
+
+## Code Style and Structure
+- Concise, readable TypeScript. Functional/declarative patterns. DRY. Use early returns.
+- Logical component order: exports → subcomponents → helpers → types.
+- Descriptive names: `isLoading`, `hasError`; event handlers `handleClick`.
+- Named exports preferred.
+
+## TypeScript
+- Use TS everywhere. Prefer `interface` over `type` for shapes.
+- Avoid `enum`; use `const` maps with `as const` and `keyof typeof`.
+- Use `satisfies` for validation and inference without widening.
+- Maintain strict type safety.
+
+## React 19 / Next.js 15
+- Favor Server Components. Add `use client` only when needed.
+- Use Suspense and proper error boundaries.
+- State: prefer URL state via `nuqs`; minimize client state. Use `useActionState` and the enhanced `useFormStatus`.
+- Async runtime APIs are async: `await cookies()`, `await headers()`, `await draftMode()`.
+
+## Data Fetching & Caching
+- Fetch is not cached by default. Opt-in with `cache: 'force-cache'` when appropriate.
+- Use `fetchCache = 'default-cache'` for layout/page-level caching.
+- Mark route handlers/static pages when safe to do so.
+
+## UI Development
+- Tailwind, Shadcn UI, Radix UI. Mobile-first; consistent spacing/layout.
+- Accessibility: proper ARIA, keyboard nav, alt text, WCAG 2.1.
+- Performance: image optimization, code splitting, `next/font`, Core Web Vitals.
+
+## Testing & Quality
+- Comprehensive error handling; secure by default.
+- ESLint + Prettier; meaningful tests with React Testing Library.
+- Validate a11y where practical.
+

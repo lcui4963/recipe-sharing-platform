@@ -1,0 +1,30 @@
+---
+globs: *.ts,*.tsx
+description: TypeScript style, naming, and typing conventions.
+---
+# TypeScript Style and Conventions
+
+## Naming
+- Use descriptive names; avoid abbreviations. Prefer words over acronyms.
+- Booleans with auxiliaries: `isOpen`, `hasError`, `canSubmit`.
+- Event handlers: `handleClick`, `handleSubmit`, `handleChange`.
+- Directory naming: lowercase-dash, e.g., `components/auth-wizard`.
+
+## Structure
+- Prefer named exports for components and utilities.
+- Organize components: exports → subcomponents → helpers → types.
+- Use early returns to flatten control flow.
+
+## Types
+- Prefer `interface` over `type` for object shapes.
+- Avoid `enum`. Use `const` objects with `as const` and `keyof typeof` for unions.
+- Use the `satisfies` operator to validate objects against interfaces without widening.
+- Do not use `any`. Prefer `unknown`, generics, or narrowed unions.
+
+## Functions
+- Explicitly type exported/public APIs; allow local inference for trivial variables.
+- Guard clauses for error/edge cases; avoid deep nesting.
+
+## Formatting
+- Follow ESLint/Prettier settings; keep lines readable; no unrelated reformatting.
+
