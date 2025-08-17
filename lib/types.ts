@@ -2,6 +2,7 @@ export interface Profile {
   id: string
   username: string
   full_name: string
+  bio: string | null
   created_at: string
   updated_at: string
 }
@@ -17,6 +18,10 @@ export interface Recipe {
   cooking_time: number | null
   difficulty: 'easy' | 'medium' | 'hard' | null
   category: string | null
+  profiles?: {
+    username: string
+    full_name: string
+  } | null
 }
 
 export interface CreateRecipeData {
@@ -32,4 +37,5 @@ export interface CreateRecipeData {
 export interface UpdateProfileData {
   username?: string
   full_name?: string
+  bio?: string
 }

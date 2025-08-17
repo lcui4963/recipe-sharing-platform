@@ -1,54 +1,73 @@
-# Database Setup Instructions
+# Database Setup and Migration
 
-## Prerequisites
-1. Make sure you have Supabase CLI installed
-2. Have your Supabase project created and running
+This directory contains the database schema and migration scripts for the Recipe Sharing Platform.
 
-## Setup Steps
+## Files
 
-### 1. Install Dependencies
-```bash
-npm install @supabase/supabase-js @supabase/auth-helpers-nextjs
-```
+- `schema.sql` - Complete database schema with all tables, indexes, and policies
+- `migration_add_bio.sql` - Migration script to add the bio column to existing profiles table
 
-### 2. Environment Variables
-Create a `.env.local` file in your project root with:
-```
-NEXT_PUBLIC_SUPABASE_URL=your-project-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-```
+## Setup Instructions
 
-### 3. Run Database Schema
-Copy and paste the contents of `schema.sql` into your Supabase SQL editor and run it.
+### 1. Initial Setup
+
+If you're setting up the database for the first time:
+
+1. Go to your Supabase project dashboard
+2. Navigate to the SQL Editor
+3. Copy and paste the contents of `schema.sql`
+4. Execute the script
+
+### 2. Adding Bio Column (Migration)
+
+If you have an existing database without the bio column:
+
+1. Go to your Supabase project dashboard
+2. Navigate to the SQL Editor
+3. Copy and paste the contents of `migration_add_bio.sql`
+4. Execute the script
 
 ## Database Schema
 
-### Profiles Table
-- `id` (UUID, Primary Key) - References auth.users
-- `username` (TEXT, Unique) - User's display name
+### Tables
+
+#### profiles
+- `id` (UUID) - Primary key, references auth.users.id
+- `username` (TEXT) - Unique username
 - `full_name` (TEXT) - User's full name
+- `bio` (TEXT) - Optional user bio/description
 - `created_at` (TIMESTAMP) - Record creation time
-- `updated_at` (TIMESTAMP) - Last update time
+- `updated_at` (TIMESTAMP) - Record last update time
 
-### Recipes Table
-- `id` (UUID, Primary Key) - Auto-generated
-- `created_at` (TIMESTAMP) - Record creation time
-- `user_id` (UUID) - References profiles.id
+#### recipes
+- `id` (UUID) - Primary key
+- `user_id` (UUID) - Foreign key to profiles.id
 - `title` (TEXT) - Recipe title
+- `description` (TEXT) - Optional recipe description
 - `ingredients` (TEXT) - Recipe ingredients
-- `instructions` (TEXT) - Cooking instructions
-- `cooking_time` (INTEGER) - Time in minutes
-- `difficulty` (TEXT) - 'easy', 'medium', or 'hard'
+- `instructions` (TEXT) - Recipe instructions
+- `cooking_time` (INTEGER) - Cooking time in minutes
+- `difficulty` (TEXT) - Difficulty level (easy/medium/hard)
 - `category` (TEXT) - Recipe category
+- `created_at` (TIMESTAMP) - Record creation time
 
-## Security Features
-- Row Level Security (RLS) enabled on all tables
-- Users can only modify their own data
-- Public read access for recipes and profiles
-- Automatic timestamp updates via triggers
+## Row Level Security (RLS)
 
-## Available Functions
-The `lib/database.ts` file provides utility functions for:
-- Profile management (get, create, update)
-- Recipe management (get, create, update, delete)
-- User-specific recipe queries
+The database uses Row Level Security to ensure data privacy:
+
+- Users can view all profiles and recipes
+- Users can only update/delete their own profiles and recipes
+- Users can only insert their own profiles and recipes
+
+## Indexes
+
+Performance indexes are created for:
+- Username lookups
+- User recipe queries
+- Recipe creation date sorting
+- Recipe category filtering
+- Full-text search on recipe content
+
+## Triggers
+
+- Automatic `updated_at` timestamp updates when records are modified

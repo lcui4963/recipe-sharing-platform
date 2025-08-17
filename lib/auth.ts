@@ -6,7 +6,10 @@ export async function getCurrentUser() {
   const { data: { user }, error } = await supabase.auth.getUser()
   
   if (error) {
-    console.error('Error getting current user:', error)
+    // Only log errors that aren't just "no session" cases
+    if (error.message !== 'Auth session missing!' && !error.message.includes('session')) {
+      console.error('Error getting current user:', error)
+    }
     return null
   }
   
@@ -39,6 +42,7 @@ export async function signUp(email: string, password: string, profileData: { use
       id: user.id,
       username: profileData.username,
       full_name: profileData.full_name,
+      bio: null,
     })
 
     if (!profile) {
@@ -65,11 +69,24 @@ export async function signIn(email: string, password: string) {
 }
 
 export async function signOut() {
-  const { error } = await supabase.auth.signOut()
-  
-  if (error) {
-    console.error('Error signing out:', error)
-    throw new Error(error.message)
+  try {
+    const { error } = await supabase.auth.signOut({
+      scope: 'global' // Sign out from all devices/sessions
+    })
+    
+    if (error) {
+      console.error('Error signing out:', error)
+      throw new Error(error.message)
+    }
+    
+    // Clear any cached auth data
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('supabase.auth.token')
+      sessionStorage.clear()
+    }
+  } catch (error) {
+    console.error('Error in signOut function:', error)
+    throw error
   }
 }
 
@@ -80,7 +97,16 @@ export async function updateCurrentProfile(updates: UpdateProfileData): Promise<
     throw new Error('No authenticated user')
   }
   
-  return await updateProfile(user.id, updates)
+  console.log('Updating profile for current user:', user.id, 'with updates:', updates)
+  
+  try {
+    const result = await updateProfile(user.id, updates)
+    console.log('updateCurrentProfile result:', result)
+    return result
+  } catch (error) {
+    console.error('Error in updateCurrentProfile:', error)
+    throw error
+  }
 }
 
 export async function resetPassword(email: string) {
