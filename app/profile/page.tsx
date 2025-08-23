@@ -1,6 +1,8 @@
+import { Suspense } from 'react'
 import { redirect } from 'next/navigation'
 import { getCurrentUserServer } from '@/lib/supabase-server-auth'
 import { ProfilePageContent } from './profile-page-content'
+import { ProfileSkeleton } from '@/app/components/ui/loading'
 
 export default async function ProfilePage() {
   // Server-side authentication check
@@ -20,7 +22,9 @@ export default async function ProfilePage() {
           </p>
         </div>
 
-        <ProfilePageContent />
+        <Suspense fallback={<ProfileSkeleton />}>
+          <ProfilePageContent />
+        </Suspense>
       </div>
     </div>
   )

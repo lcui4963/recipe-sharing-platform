@@ -4,10 +4,12 @@ import { useState } from 'react'
 import { Clock, ChefHat, User, Calendar, Edit, Trash2, ArrowLeft } from 'lucide-react'
 import { Button } from '@/app/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/app/components/ui/card'
-import type { Recipe } from '@/lib/types'
+import { RecipeStats, CommentsSection } from '@/app/components/social'
+import { getRecipeComments } from '@/lib/actions/social'
+import type { RecipeWithStats, CommentWithStats } from '@/lib/types'
 
 interface RecipeDetailProps {
-  recipe: Recipe
+  recipe: RecipeWithStats
   currentUserId?: string
   onEdit?: () => void
   onDelete?: () => void
@@ -200,59 +202,72 @@ export function RecipeDetail({
             </div>
           </div>
         </CardHeader>
+        
+        {/* Social Stats */}
+        <CardContent className="pt-0">
+          <RecipeStats
+            recipe={recipe}
+            currentUserId={currentUserId}
+            showLikeButton={true}
+            className="pt-4 border-t border-gray-100"
+          />
+        </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Ingredients */}
-        <Card className="lg:col-span-1">
+      {/* Single Page Layout - All Recipe Information */}
+      <div className="space-y-6">
+        {/* Ingredients Section */}
+        <Card>
           <CardHeader>
-            <CardTitle className="text-xl font-semibold flex items-center gap-2">
-              <ChefHat className="h-5 w-5 text-orange-600" />
+            <CardTitle className="text-2xl font-bold flex items-center gap-3">
+              <ChefHat className="h-6 w-6 text-orange-600" />
               Ingredients
+              <span className="text-sm font-normal text-gray-500">({ingredients.length} items)</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ul className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {ingredients.map((ingredient, index) => (
-                <li key={index} className="flex items-start gap-3">
+                <div key={index} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors">
                   <button
                     onClick={() => toggleIngredient(index)}
-                    className={`flex-shrink-0 w-4 h-4 rounded border-2 mt-0.5 transition-colors ${
+                    className={`flex-shrink-0 w-5 h-5 rounded border-2 mt-0.5 transition-colors ${
                       checkedIngredients.has(index)
                         ? 'bg-orange-600 border-orange-600'
                         : 'border-gray-300 hover:border-orange-400'
                     }`}
                   >
                     {checkedIngredients.has(index) && (
-                      <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
                     )}
                   </button>
-                  <span className={`text-gray-700 ${checkedIngredients.has(index) ? 'line-through text-gray-400' : ''}`}>
+                  <span className={`text-gray-700 font-medium ${checkedIngredients.has(index) ? 'line-through text-gray-400' : ''}`}>
                     {ingredient}
                   </span>
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           </CardContent>
         </Card>
 
-        {/* Instructions */}
-        <Card className="lg:col-span-2">
+        {/* Instructions & Steps Section */}
+        <Card>
           <CardHeader>
-            <CardTitle className="text-xl font-semibold flex items-center gap-2">
+            <CardTitle className="text-2xl font-bold flex items-center gap-3">
               <span className="text-orange-600">📝</span>
-              Instructions
+              Instructions & Steps
+              <span className="text-sm font-normal text-gray-500">({instructions.length} steps)</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <ol className="space-y-4">
+            <div className="space-y-6">
               {instructions.map((instruction, index) => (
-                <li key={index} className="flex items-start gap-4">
+                <div key={index} className="flex items-start gap-4 p-4 rounded-lg hover:bg-gray-50 transition-colors">
                   <button
                     onClick={() => toggleStep(index)}
-                    className={`flex-shrink-0 w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-medium transition-colors ${
+                    className={`flex-shrink-0 w-10 h-10 rounded-full border-2 flex items-center justify-center text-lg font-bold transition-colors ${
                       completedSteps.has(index)
                         ? 'bg-orange-600 border-orange-600 text-white'
                         : 'border-orange-300 text-orange-600 hover:border-orange-400 hover:bg-orange-50'
@@ -261,11 +276,23 @@ export function RecipeDetail({
                     {index + 1}
                   </button>
                   <div className={`flex-1 pt-1 ${completedSteps.has(index) ? 'line-through text-gray-400' : 'text-gray-700'}`}>
-                    <p className="leading-relaxed">{instruction}</p>
+                    <h4 className="font-semibold text-gray-900 mb-2">Step {index + 1}</h4>
+                    <p className="leading-relaxed text-lg">{instruction}</p>
                   </div>
-                </li>
+                </div>
               ))}
-            </ol>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Comments Section */}
+        <Card>
+          <CardContent className="p-6">
+            <CommentsSection
+              recipeId={recipe.id}
+              currentUserId={currentUserId}
+              showTitle={true}
+            />
           </CardContent>
         </Card>
       </div>

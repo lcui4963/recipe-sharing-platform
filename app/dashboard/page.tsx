@@ -4,7 +4,8 @@ import { Plus, BookOpen, Search, Calendar } from 'lucide-react'
 import { ProtectedRoute } from '@/app/components/auth/protected-route'
 
 import { RecipeCard, RecipeCardSkeleton } from '@/app/components/recipes'
-import { getRecipesByUser, getRecipes } from '@/lib/database'
+import { DashboardStatsSkeleton } from '@/app/components/ui/loading'
+import { getRecipesByUserWithStatsServer, getRecipesWithStatsServer } from '@/lib/database-server'
 import { getCurrentUserServer } from '@/lib/supabase-server-auth'
 
 async function DashboardStats() {
@@ -13,8 +14,8 @@ async function DashboardStats() {
     if (!user) return null
 
     const [userRecipes, allRecipes] = await Promise.all([
-      getRecipesByUser(user.id),
-      getRecipes(5, 0) // Get 5 recent recipes
+      getRecipesByUserWithStatsServer(user.id),
+      getRecipesWithStatsServer() // Get all recipes
     ])
 
     return (
@@ -38,7 +39,7 @@ async function DashboardStats() {
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Community Recipes</p>
-              <p className="text-2xl font-bold text-gray-900">{allRecipes.length}+</p>
+              <p className="text-2xl font-bold text-gray-900">{allRecipes.length}</p>
             </div>
           </div>
         </div>
@@ -74,7 +75,7 @@ async function RecentRecipes() {
     const user = await getCurrentUserServer()
     if (!user) return null
 
-    const userRecipes = await getRecipesByUser(user.id)
+    const userRecipes = await getRecipesByUserWithStatsServer(user.id)
     const recentRecipes = userRecipes.slice(0, 3)
 
     if (recentRecipes.length === 0) {
@@ -152,7 +153,7 @@ export default async function DashboardPage() {
           </div>
           
           {/* Stats */}
-          <Suspense fallback={<div className="mb-8 h-24 bg-gray-100 rounded animate-pulse" />}>
+          <Suspense fallback={<DashboardStatsSkeleton />}>
             <DashboardStats />
           </Suspense>
           

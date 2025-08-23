@@ -3,11 +3,18 @@
 import Link from 'next/link'
 import { Clock, ChefHat, User, Calendar } from 'lucide-react'
 import { Card, CardContent, CardHeader } from '@/app/components/ui/card'
-import type { Recipe } from '@/lib/types'
+import { RecipeStats } from '@/app/components/social'
+import type { Recipe, RecipeWithStats } from '@/lib/types'
 
 interface RecipeCardProps {
-  recipe: Recipe
+  recipe: Recipe | RecipeWithStats
   showAuthor?: boolean
+  showSocialStats?: boolean
+}
+
+// Type guard to check if recipe has social stats
+function hasStats(recipe: Recipe | RecipeWithStats): recipe is RecipeWithStats {
+  return 'like_count' in recipe && 'comment_count' in recipe
 }
 
 const DIFFICULTY_COLORS = {
@@ -22,7 +29,7 @@ const DIFFICULTY_ICONS = {
   hard: '🔴'
 } as const
 
-export function RecipeCard({ recipe, showAuthor = true }: RecipeCardProps) {
+export function RecipeCard({ recipe, showAuthor = true, showSocialStats = true }: RecipeCardProps) {
   const formatCookingTime = (minutes: number | null) => {
     if (!minutes) return null
     if (minutes < 60) return `${minutes}m`
@@ -103,6 +110,18 @@ export function RecipeCard({ recipe, showAuthor = true }: RecipeCardProps) {
                 </div>
               )}
             </div>
+
+            {/* Social Stats */}
+            {showSocialStats && hasStats(recipe) && (
+              <div className="pt-2 border-t border-gray-100">
+                <RecipeStats
+                  recipe={recipe}
+                  showLikeButton={false}
+                  variant="compact"
+                  className="text-xs"
+                />
+              </div>
+            )}
 
             {/* Author and Date */}
             <div className="flex items-center justify-between text-xs text-gray-500 pt-2 border-t border-gray-100">

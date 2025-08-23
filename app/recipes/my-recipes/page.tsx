@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation'
 import { Plus } from 'lucide-react'
 import { Button } from '@/app/components/ui/button'
 import { RecipeGrid, RecipeGridSkeleton } from '@/app/components/recipes'
-import { getRecipesByUserServer } from '@/lib/database-server'
+import { getRecipesByUserWithStatsServer } from '@/lib/database-server'
 import { getCurrentUserServer } from '@/lib/supabase-server-auth'
 
 async function UserRecipesList() {
@@ -15,7 +15,7 @@ async function UserRecipesList() {
       redirect('/auth/signin?redirect=/recipes/my-recipes')
     }
 
-    const recipes = await getRecipesByUserServer(user.id)
+    const recipes = await getRecipesByUserWithStatsServer(user.id)
 
     return (
       <RecipeGrid 

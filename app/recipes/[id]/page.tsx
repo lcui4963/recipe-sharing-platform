@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { notFound } from 'next/navigation'
-import { getRecipeByIdServer } from '@/lib/database-server'
+import { getRecipeWithStatsServer } from '@/lib/database-server'
 import { getCurrentUserServer } from '@/lib/supabase-server-auth'
 import { RecipeDetailView } from './recipe-detail-view'
 import { RecipeDetailSkeleton } from '@/app/components/recipes'
@@ -14,7 +14,7 @@ interface RecipePageProps {
 async function RecipeContent({ recipeId }: { recipeId: string }) {
   try {
     const [recipe, currentUser] = await Promise.all([
-      getRecipeByIdServer(recipeId),
+      getRecipeWithStatsServer(recipeId),
       getCurrentUserServer()
     ])
 
@@ -53,7 +53,7 @@ export async function generateMetadata({ params }: RecipePageProps) {
   const { id } = await params
   
   try {
-    const recipe = await getRecipeByIdServer(id)
+    const recipe = await getRecipeWithStatsServer(id)
     
     if (!recipe) {
       return {

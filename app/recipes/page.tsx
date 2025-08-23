@@ -4,7 +4,7 @@ import { Plus, Search } from 'lucide-react'
 import { Button } from '@/app/components/ui/button'
 import { Input } from '@/app/components/ui/input'
 import { RecipeGrid, RecipeGridSkeleton } from '@/app/components/recipes'
-import { getRecipesServer } from '@/lib/database-server'
+import { getRecipesWithStatsServer } from '@/lib/database-server'
 
 interface RecipesPageProps {
   searchParams: Promise<{
@@ -27,7 +27,7 @@ async function RecipesList({
   try {
     // For now, we'll get all recipes and filter client-side
     // Later we can optimize with server-side filtering
-    let recipes = await getRecipesServer()
+    let recipes = await getRecipesWithStatsServer()
 
     // Apply filters
     if (search) {

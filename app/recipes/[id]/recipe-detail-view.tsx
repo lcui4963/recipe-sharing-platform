@@ -4,10 +4,10 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { RecipeDetail } from '@/app/components/recipes'
 import { deleteRecipeAction } from '@/lib/actions/recipes'
-import type { Recipe } from '@/lib/types'
+import type { RecipeWithStats } from '@/lib/types'
 
 interface RecipeDetailViewProps {
-  recipe: Recipe
+  recipe: RecipeWithStats
   currentUserId?: string
 }
 

@@ -1,0 +1,5 @@
+export { LikeButton } from './like-button'
+export { CommentForm } from './comment-form'
+export { CommentItem } from './comment-item'
+export { CommentsSection } from './comments-section'
+export { RecipeStats } from './recipe-stats'
